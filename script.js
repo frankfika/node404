@@ -114,7 +114,7 @@
     }
 
     // 创建弹幕
-    function createDanmaku(text, delaySec = 0) {
+    function createDanmaku(text, delaySec = 0, force = false) {
       const now = performance.now();
       if (!lanes.length) setupLanes();
       let laneIdx = 0;
@@ -122,12 +122,12 @@
       for (let i = 1; i < lanes.length; i++) {
         if (lanes[i] < earliest) { earliest = lanes[i]; laneIdx = i; }
       }
-      if (earliest > now + delaySec * 1000) return;
+      if (!force && earliest > now + delaySec * 1000) return;
 
       const item = document.createElement('div');
       item.className = 'danmaku-item';
       item.textContent = text;
-      item.style.visibility = 'hidden';
+      item.style.visibility = force ? 'visible' : 'hidden';
       container.appendChild(item);
 
       const w = item.offsetWidth || 120;
@@ -137,9 +137,11 @@
       item.style.top = topPx + 'px';
       item.style.animationDuration = durationSec + 's';
       item.style.animationDelay = delaySec + 's';
-      item.addEventListener('animationstart', () => {
-        item.style.visibility = 'visible';
-      }, { once: true });
+      if (!force) {
+        item.addEventListener('animationstart', () => {
+          item.style.visibility = 'visible';
+        }, { once: true });
+      }
 
       lanes[laneIdx] = now + delaySec * 1000 + ((w + GAP) / speed) * 1000;
 
@@ -171,7 +173,7 @@
     inputField.addEventListener('keypress', (e) => {
       if (e.key === 'Enter' && inputField.value.trim()) {
         const value = inputField.value.trim();
-        createDanmaku(value);
+        createDanmaku(value, 0, true);
         state.latestDanmaku = [value, ...state.latestDanmaku.filter(t => t !== value)].slice(0, 50);
         scrollQueue = [value, ...scrollQueue.filter(t => t !== value)].slice(0, 30);
         localStorage.setItem('node404-danmaku-latest', JSON.stringify(state.latestDanmaku));
@@ -581,6 +583,82 @@
     }
   `;
   document.head.appendChild(style);
+
+  // ===== 简易双语切换 =====
+  const i18n = {
+    zh: {
+      nav: { mission: '使命', voting: '投票', experiments: '实验', collective: '社群网络', access: '加入', contact: '联系' },
+      hero: { slogan: '在现实世界，重启一次「404实验」', explore: '探索', join: '加入' },
+      mission: { title: '使命' },
+      voting: { title: '投票墙' },
+      experiments: { title: '实验' },
+      collective: { title: '社群网络' },
+      access: { title: '加入', subtitle: '加入我们的实验网络' },
+      tabs: { participate: '参与', contact: '联系', donate: '捐助', issues: '问题' },
+      participate: { title: '如何参与' },
+      contact: { title: '联系' },
+      issues: { title: 'ISSUE WALL', empty: '暂无 Issue，点击右下角「开 ISSUE」创造第一个！' },
+      issuePanel: { title: '开一个新 ISSUE' },
+      buttons: { cancel: '取消', submit: '提交 ISSUE' },
+      placeholders: { issueTitle: 'Issue 标题', issueBody: '描述你的想法...' }
+    },
+    en: {
+      nav: { mission: 'MISSION', voting: 'VOTING', experiments: 'EXPERIMENTS', collective: 'COLLECTIVE', access: 'ACCESS', contact: 'CONTACT' },
+      hero: { slogan: 'Reboot the "404 Experiment" in the real world', explore: 'EXPLORE', join: 'JOIN' },
+      mission: { title: 'MISSION' },
+      voting: { title: 'VOTING WALL' },
+      experiments: { title: 'EXPERIMENTS' },
+      collective: { title: 'COLLECTIVE' },
+      access: { title: 'ACCESS', subtitle: 'Join our experimental network' },
+      tabs: { participate: 'Participate', contact: 'Contact', donate: 'Donate', issues: 'Issues' },
+      participate: { title: 'How to Participate' },
+      contact: { title: 'CONTACT' },
+      issues: { title: 'ISSUE WALL', empty: 'No issues yet — click bottom-right to create one!' },
+      issuePanel: { title: 'Open a new ISSUE' },
+      buttons: { cancel: 'Cancel', submit: 'Submit ISSUE' },
+      placeholders: { issueTitle: 'Issue title', issueBody: 'Describe your idea...' }
+    }
+  };
+  function detectLang(){ const l=localStorage.getItem('node404-lang'); if(l) return l; return (navigator.language||'').startsWith('zh')?'zh':'en'; }
+  let currentLang = detectLang();
+  function applyI18n(lang){ const t=i18n[lang]; if(!t) return;
+    const q=(sel)=>document.querySelector(sel);
+    const qa=(sel)=>Array.from(document.querySelectorAll(sel));
+    // nav
+    const mapNav={ '#mission':t.nav.mission, '#voting':t.nav.voting, '#experiments':t.nav.experiments, '#collective':t.nav.collective, '#access':t.nav.access };
+    Object.entries(mapNav).forEach(([href,label])=>{ const a=document.querySelector(`.nav-links a[href="${href}"]`); if(a) a.textContent=label; });
+    const navCta=q('.nav-cta'); if(navCta) navCta.textContent=t.nav.contact;
+    // hero
+    const heroS=q('.hero-slogan'); if(heroS) heroS.textContent=t.hero.slogan;
+    const heroExplore=q('.hero-actions .btn.btn-primary'); if(heroExplore) heroExplore.textContent=t.hero.explore;
+    const heroJoin=q('.hero-actions .btn.btn-secondary'); if(heroJoin) heroJoin.textContent=t.hero.join;
+    // section titles
+    const secMap={ '#mission h2':t.mission.title, '#voting h2':t.voting.title, '#experiments h2':t.experiments.title, '#collective h2':t.collective.title, '#access h2':t.access.title };
+    Object.entries(secMap).forEach(([sel,label])=>{ const el=q(sel); if(el) el.textContent=label; });
+    const accSub=q('#access .section-title + p, #access .section-title p'); if(accSub) accSub.textContent=t.access.subtitle;
+    // tabs
+    qa('#accessTabs .tab-btn').forEach(btn=>{ const key=btn.dataset.tab; if(t.tabs[key]) btn.textContent=t.tabs[key]; });
+    // cards
+    const partTitle=q('#participateContent h3'); if(partTitle) partTitle.textContent=t.participate.title;
+    const contactTitle=q('#contactContent h3'); if(contactTitle) contactTitle.textContent=t.contact.title;
+    // issue wall
+    const wallTitle=q('#issueWall h2'); if(wallTitle) wallTitle.textContent=t.issues.title;
+    ['#issueList','#issueListAccess'].forEach(id=>{ const el=q(id); if(el && el.children.length===1 && el.textContent.includes('暂无 Issue')) el.innerHTML=`<div class="issue-item"><p>${t.issues.empty}</p></div>`; });
+    // issue panel
+    const panelTitle=q('#issuePanel .issue-header h3'); if(panelTitle) panelTitle.textContent=t.issuePanel.title;
+    const cancelBtn=q('#cancelIssue'); if(cancelBtn) cancelBtn.textContent=t.buttons.cancel;
+    const submitBtn=q('#submitIssue'); if(submitBtn) submitBtn.textContent=t.buttons.submit;
+    const titlePh=q('#issueTitle'); if(titlePh) titlePh.placeholder=t.placeholders.issueTitle;
+    const bodyPh=q('#issueBody'); if(bodyPh) bodyPh.placeholder=t.placeholders.issueBody;
+    // toggle button label
+    const toggle=document.getElementById('langToggle'); if(toggle) toggle.textContent=(lang==='zh'?'EN':'中文');
+  }
+  function setLang(lang){ currentLang=lang; localStorage.setItem('node404-lang',lang); applyI18n(lang); }
+  // inject toggle if missing
+  (function(){ let toggle=document.getElementById('langToggle'); if(!toggle){ toggle=document.createElement('button'); toggle.id='langToggle'; toggle.className='btn btn-secondary'; const actions=document.querySelector('.nav-actions'); if(actions) actions.appendChild(toggle); }
+    toggle.addEventListener('click',()=> setLang(currentLang==='zh'?'en':'zh'));
+    toggle.textContent=(currentLang==='zh'?'EN':'中文');
+  })();
 
   // 页面加载完成后初始化
   if (document.readyState === 'loading') {
