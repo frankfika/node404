@@ -137,7 +137,9 @@
       item.style.top = topPx + 'px';
       item.style.animationDuration = durationSec + 's';
       item.style.animationDelay = delaySec + 's';
-      item.style.visibility = 'visible';
+      item.addEventListener('animationstart', () => {
+        item.style.visibility = 'visible';
+      }, { once: true });
 
       lanes[laneIdx] = now + delaySec * 1000 + ((w + GAP) / speed) * 1000;
 
