@@ -899,7 +899,6 @@ a:hover {
   display: flex;
   gap: 1rem;
 }
-  to { transform: translateY(110vh); opacity: 0; }
 }
 
 /* ===== 投票墙系统 ===== */
