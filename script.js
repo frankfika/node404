@@ -300,29 +300,23 @@
   }
 
   function initAccessTabs() {
-    const tabs = $$('#accessTabs .tab-btn');
-    const participate = $('#participateContent');
-    const contact = $('#contactContent');
-    const donate = $('#donateContent');
-    const issues = $('#issuesContent');
+    const tabs = Array.from(document.querySelectorAll('#accessTabs .tab-btn'));
+    const panes = Array.from(document.querySelectorAll('.tab-content .tab-pane'));
+    function setActive(key){
+      tabs.forEach(b => b.classList.toggle('active', b.dataset.tab === key));
+      panes.forEach(p => p.classList.toggle('active', p.id === (key + 'Content')));
+    }
     tabs.forEach(btn => {
       btn.addEventListener('click', () => {
-        tabs.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        const tab = btn.dataset.tab;
-        participate.classList.remove('active');
-        if (contact) contact.classList.remove('active');
-        donate.classList.remove('active');
-        issues.classList.remove('active');
-        if (tab === 'contact' && contact) {
-          contact.classList.add('active');
-        } else if (tab === 'donate') {
-          donate.classList.add('active');
-        } else if (tab === 'issues') {
-          issues.classList.add('active');
-        } else {
-          participate.classList.add('active');
-        }
+        const key = btn.dataset.tab;
+        if (!key) return;
+        setActive(key);
+      });
+    });
+    const initial = (tabs.find(t => t.classList.contains('active')) || tabs[0]);
+    if (initial) setActive(initial.dataset.tab);
+  }
+
       });
     });
   }
