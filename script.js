@@ -17,7 +17,6 @@
 
   // 初始化
   function init() {
-    initCodeRain();
     initTerminalEffect();
     initSmoothScroll();
     initNavbarScroll();
