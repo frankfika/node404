@@ -1340,3 +1340,17 @@ a:hover {
   font-size: 0.875rem;
   text-transform: uppercase;
 }
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .hero { padding-top: 7rem; }
+  .mission-card, .experiment-card, .vote-card, .access-card { margin: 0 0 1rem; }
+  .danmaku-container { top: 12vh; height: 28vh; }
+  .danmaku-input { bottom: calc(6rem + env(safe-area-inset-bottom)); left: 1rem; right: 1rem; }
+  .floating-issue-btn { right: 1rem; bottom: calc(1rem + env(safe-area-inset-bottom)); }
+  .tab-switch { flex-wrap: wrap; }
+  .tab-switch .tab-btn { flex: 1 1 45%; }
+}
+@media (max-width: 768px) {
+  .issue-modal { width: 95%; margin: 8vh auto 0; max-height: 80vh; overflow: auto; }
+  .issue-modal .issue-form { grid-template-columns: 1fr; }
+}
