@@ -416,26 +416,6 @@
   }
 
   // 原有功能
-  function initCodeRain() {
-    const rain = document.createElement('div');
-    rain.className = 'code-rain';
-    document.body.appendChild(rain);
-
-    const chars = '01';
-    
-    function createDrop() {
-      const drop = document.createElement('div');
-      drop.className = 'code-drop';
-      drop.textContent = chars[Math.floor(Math.random() * chars.length)];
-      drop.style.left = Math.random() * 100 + '%';
-      drop.style.animationDelay = Math.random() * 2 + 's';
-      drop.style.animationDuration = (Math.random() * 2 + 2) + 's';
-      rain.appendChild(drop);
-      
-      setTimeout(() => {
-        if (drop.parentNode) drop.remove();
-      }, 4000);
-    }
 
     setInterval(createDrop, 200);
     for (let i = 0; i < 20; i++) {

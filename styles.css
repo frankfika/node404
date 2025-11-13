@@ -899,26 +899,6 @@ a:hover {
   display: flex;
   gap: 1rem;
 }
-
-.code-rain {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  pointer-events: none;
-  z-index: 900;
-}
-
-.code-drop {
-  position: absolute;
-  color: var(--black);
-  font-family: var(--mono);
-  animation-name: codeFall;
-}
-
-@keyframes codeFall {
-  from { transform: translateY(-10%); opacity: 0.8; }
   to { transform: translateY(110vh); opacity: 0; }
 }
 
