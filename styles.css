@@ -1006,12 +1006,15 @@ a:hover {
 }
 
 .issue-modal {
-  width: min(680px, 92%);
+  width: min(960px, 92%);
   margin: 10vh auto 0;
   background: var(--white);
   border: 2px solid var(--black);
   padding: 1rem 1.25rem;
 }
+
+.issue-modal .access-card { margin: 0; }
+.issue-modal #hostGrid { grid-template-columns: repeat(2, minmax(320px, 1fr)); }
 
 .issue-header,
 .issue-form {

@@ -29,6 +29,7 @@
     initVoting();
     initIssueSystem();
     initAccessTabs();
+    initApplyDialog();
     loadDonationWallets();
     loadSocialCards();
     loadHostQRCodes();
@@ -316,6 +317,61 @@
     });
     const initial = (tabs.find(t => t.classList.contains('active')) || tabs[0]);
     if (initial) setActive(initial.dataset.tab);
+  }
+
+  function initApplyDialog() {
+    const applyBtn = document.querySelector('#participateContent .access-actions .btn.btn-primary');
+    if (!applyBtn) return;
+    let panel = document.getElementById('applyPanel');
+    if (!panel) {
+      panel = document.createElement('div');
+      panel.className = 'issue-panel';
+      panel.id = 'applyPanel';
+      const modal = document.createElement('div');
+      modal.className = 'issue-modal';
+      const header = document.createElement('div');
+      header.className = 'issue-header';
+      const h3 = document.createElement('h3');
+      h3.id = 'applyTitle';
+      h3.textContent = 'JOIN US';
+      const closeBtn = document.createElement('button');
+      closeBtn.className = 'close-issue';
+      closeBtn.id = 'closeApply';
+      closeBtn.textContent = '×';
+      header.appendChild(h3);
+      header.appendChild(closeBtn);
+      const content = document.createElement('div');
+      content.id = 'applyContent';
+      modal.appendChild(header);
+      modal.appendChild(content);
+      panel.appendChild(modal);
+      document.body.appendChild(panel);
+      function closePanel(){ panel.classList.remove('active'); }
+      closeBtn.addEventListener('click', closePanel);
+      panel.addEventListener('click', (e) => { if (e.target === panel) closePanel(); });
+    }
+    const content = document.getElementById('applyContent');
+    const source = document.querySelector('#contactContent .access-card');
+    applyBtn.addEventListener('click', () => {
+      if (!content || !source) return;
+      content.innerHTML = '';
+      const cloned = source.cloneNode(true);
+      content.appendChild(cloned);
+      cloned.querySelectorAll('.terminal-content').forEach(terminal => {
+        const text = terminal.innerHTML;
+        terminal.innerHTML = '';
+        let i = 0;
+        const typeWriter = () => {
+          if (i < text.length) {
+            terminal.innerHTML = text.substring(0, i + 1);
+            i++;
+            setTimeout(typeWriter, Math.random() * 50 + 20);
+          }
+        };
+        setTimeout(typeWriter, 400);
+      });
+      panel.classList.add('active');
+    });
   }
 
   function loadHostQRCodes() {
@@ -727,8 +783,8 @@
     // issue wall
     const wallTitle=q('#issueWall h2'); if(wallTitle) wallTitle.textContent=t.issues.title;
     ['#issueList','#issueListAccess'].forEach(id=>{ const el=q(id); if(el && el.children.length===1 && el.textContent.includes('暂无 Issue')) el.innerHTML=`<div class="issue-item"><p>${t.issues.empty}</p></div>`; });
-    // issue panel
     const panelTitle=q('#issuePanel .issue-header h3'); if(panelTitle) panelTitle.textContent=t.issuePanel.title;
+    const applyPanelTitle=q('#applyPanel .issue-header h3'); if(applyPanelTitle) applyPanelTitle.textContent=t.participate.title;
     const cancelBtn=q('#cancelIssue'); if(cancelBtn) cancelBtn.textContent=t.buttons.cancel;
     const submitBtn=q('#submitIssue'); if(submitBtn) submitBtn.textContent=t.buttons.submit;
     const titlePh=q('#issueTitle'); if(titlePh) titlePh.placeholder=t.placeholders.issueTitle;
