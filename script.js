@@ -30,7 +30,8 @@
     initIssueSystem();
     initAccessTabs();
     loadDonationWallets();
-    loadContactQRCodes();
+    loadSocialCards();
+    loadHostQRCodes();
     
     // 渲染已有 Issue
     renderIssues();
@@ -317,6 +318,113 @@
     if (initial) setActive(initial.dataset.tab);
   }
 
+  function loadHostQRCodes() {
+    const grid = document.getElementById('hostGrid');
+    if (!grid) return;
+    const candidates = [
+      { type: 'qr', label: 'YuKi', src: 'contact/yuki.jpg', desc: '主理人：2017入圈Web3，做过DeFi，经历牛熊；专注寻找真正在思考和做事的人' },
+      { type: 'qr', label: 'Frank', src: 'contact/frank.jpg', desc: '主理人：多年代码与AI/私募经历；热爱长谈与思想碰撞，搭台让有想法的人发声' }
+    ];
+    candidates.forEach(item => {
+      if (item.type === 'qr') {
+        const img = new Image();
+        img.onload = () => {
+          const card = document.createElement('div');
+          card.className = 'qr-crypto host';
+          const image = document.createElement('img');
+          image.src = item.src;
+          image.alt = item.label;
+          const content = document.createElement('div');
+          content.className = 'qr-content';
+          const text = document.createElement('div');
+          text.className = 'label';
+          text.textContent = item.label;
+          const d = document.createElement('div');
+          d.className = 'desc';
+          d.textContent = item.desc;
+          content.appendChild(text);
+          content.appendChild(d);
+          card.appendChild(image);
+          card.appendChild(content);
+          grid.appendChild(card);
+        };
+        img.onerror = () => {
+          const card = document.createElement('div');
+          card.className = 'qr-crypto host';
+          const content = document.createElement('div');
+          content.className = 'qr-content';
+          const text = document.createElement('div');
+          text.className = 'label';
+          text.textContent = item.label;
+          const d = document.createElement('div');
+          d.className = 'desc';
+          d.textContent = item.desc + '（二维码待补充）';
+          content.appendChild(text);
+          content.appendChild(d);
+          card.appendChild(content);
+          grid.appendChild(card);
+        };
+        img.src = item.src;
+      }
+    });
+  }
+
+  function loadSocialCards() {
+    const grids = [document.getElementById('subscribeGrid'), document.getElementById('socialGrid')].filter(Boolean);
+    if (grids.length === 0) return;
+    const items = [
+      { type: 'qr', label: '公众号', src: 'contact/wechatpublicaccount.jpg', desc: '关注公众号获取活动与公告' },
+      { type: 'link', label: 'Twitter', href: 'https://twitter.com/node404', desc: '关注 Twitter 获取即时更新' }
+    ];
+    grids.forEach(grid => {
+      items.forEach(item => {
+        if (item.type === 'qr') {
+          const img = new Image();
+          img.onload = () => {
+            const card = document.createElement('div');
+            card.className = 'qr-crypto';
+            const image = document.createElement('img');
+            image.src = item.src;
+            image.alt = item.label;
+            const aImg = document.createElement('a');
+            aImg.href = item.src;
+            aImg.target = '_blank';
+            aImg.rel = 'noopener noreferrer';
+            aImg.appendChild(image);
+            const text = document.createElement('div');
+            text.className = 'label';
+            text.textContent = item.label;
+            const d = document.createElement('div');
+            d.className = 'desc';
+            d.textContent = item.desc;
+            card.appendChild(aImg);
+            card.appendChild(text);
+            card.appendChild(d);
+            grid.appendChild(card);
+          };
+          img.onerror = () => {
+            const card = document.createElement('div');
+            card.className = 'qr-crypto';
+            const text = document.createElement('div');
+            text.className = 'label';
+            text.textContent = item.label;
+            const d = document.createElement('div');
+            d.className = 'desc';
+            d.textContent = item.desc + '（二维码待补充）';
+            card.appendChild(text);
+            card.appendChild(d);
+            grid.appendChild(card);
+          };
+          img.src = item.src;
+        } else if (item.type === 'link') {
+          const a = document.createElement('a');
+          a.href = item.href;
+          a.target = '_blank';
+          a.rel = 'noopener noreferrer';
+          a.className = 'link-card big';
+          a.textContent = item.label + ' · ' + item.desc;
+          grid.appendChild(a);
+        }
       });
     });
   }
@@ -409,13 +517,7 @@
     });
   }
 
-  // 原有功能
-
-    setInterval(createDrop, 200);
-    for (let i = 0; i < 20; i++) {
-      setTimeout(createDrop, i * 100);
-    }
-  }
+  
 
   function initTerminalEffect() {
     const terminals = document.querySelectorAll('.terminal-content');
@@ -567,6 +669,8 @@
       experiments: { title: '实验' },
       collective: { title: '社群网络' },
       access: { title: '加入', subtitle: '加入我们的实验网络' },
+      hosts: { title: '入群与交流', intro: '关注并添加两位主理人微信，私信“node404”，我们会把你拉入群；也可关注公众号与 Twitter 获取更新。' },
+      follow: { title: '关注与订阅', subtitle: '关注公众号与 Twitter，获取活动与发布的即时更新' },
       tabs: { participate: '参与', contact: '联系', donate: '捐助', issues: '问题' },
       participate: { title: '如何参与' },
       contact: { title: '联系' },
@@ -583,6 +687,8 @@
       experiments: { title: 'EXPERIMENTS' },
       collective: { title: 'COLLECTIVE' },
       access: { title: 'ACCESS', subtitle: 'Join our experimental network' },
+      hosts: { title: 'Community & Joining', intro: 'Add the two hosts on WeChat and DM “node404” to join; follow our Public Account and Twitter for updates.' },
+      follow: { title: 'FOLLOW & SUBSCRIBE', subtitle: 'Follow our Public Account and Twitter for real-time updates' },
       tabs: { participate: 'Participate', contact: 'Contact', donate: 'Donate', issues: 'Issues' },
       participate: { title: 'How to Participate' },
       contact: { title: 'CONTACT' },
@@ -606,14 +712,18 @@
     const heroExplore=q('.hero-actions .btn.btn-primary'); if(heroExplore) heroExplore.textContent=t.hero.explore;
     const heroJoin=q('.hero-actions .btn.btn-secondary'); if(heroJoin) heroJoin.textContent=t.hero.join;
     // section titles
-    const secMap={ '#mission h2':t.mission.title, '#voting h2':t.voting.title, '#experiments h2':t.experiments.title, '#collective h2':t.collective.title, '#access h2':t.access.title };
+    const secMap={ '#mission h2':t.mission.title, '#voting h2':t.voting.title, '#experiments h2':t.experiments.title, '#collective h2':t.collective.title, '#access h2':t.access.title, '#subscribe h2': t.follow ? t.follow.title : 'FOLLOW & SUBSCRIBE' };
     Object.entries(secMap).forEach(([sel,label])=>{ const el=q(sel); if(el) el.textContent=label; });
     const accSub=q('#access .section-title + p, #access .section-title p'); if(accSub) accSub.textContent=t.access.subtitle;
+    const subSub=q('#subscribe .section-title + p'); if(subSub) subSub.textContent=t.follow ? t.follow.subtitle : '';
     // tabs
     qa('#accessTabs .tab-btn').forEach(btn=>{ const key=btn.dataset.tab; if(t.tabs[key]) btn.textContent=t.tabs[key]; });
     // cards
     const partTitle=q('#participateContent h3'); if(partTitle) partTitle.textContent=t.participate.title;
     const contactTitle=q('#contactContent h3'); if(contactTitle) contactTitle.textContent=t.contact.title;
+    const hostsTitle=q('#hostsTitle'); if(hostsTitle) hostsTitle.textContent=t.hosts.title;
+    const hostsIntro=q('#hostsIntro'); if(hostsIntro) hostsIntro.textContent=t.hosts.intro;
+    const socialTitle=q('#socialTitle'); if(socialTitle) socialTitle.textContent=t.follow ? t.follow.title : (lang==='zh'?'关注与订阅':'Follow & Subscribe');
     // issue wall
     const wallTitle=q('#issueWall h2'); if(wallTitle) wallTitle.textContent=t.issues.title;
     ['#issueList','#issueListAccess'].forEach(id=>{ const el=q(id); if(el && el.children.length===1 && el.textContent.includes('暂无 Issue')) el.innerHTML=`<div class="issue-item"><p>${t.issues.empty}</p></div>`; });

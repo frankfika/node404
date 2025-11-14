@@ -20,9 +20,9 @@
             </div>
             <div class="nav-links">
                 <a href="#mission" class="nav-link">MISSION</a>
-                <a href="#Co-create" class="nav-link">VOTING</a>
+                <a href="#voting" class="nav-link">VOTING</a>
                 <a href="#experiments" class="nav-link">EXPERIMENTS</a>
-                <a href="#Nodes" class="nav-link">COLLECTIVE</a>
+                <a href="#collective" class="nav-link">COLLECTIVE</a>
                 <a href="#access" class="nav-link">ACCESS</a>
             </div>
             <div class="nav-actions">
@@ -245,7 +245,7 @@
             <div class="access-content">
                 <div class="tab-switch" id="accessTabs">
                     <button class="tab-btn active" data-tab="participate">Participate</button>
-                    <button class="tab-btn" data-tab="contact">Contact</button>
+                    <button class="tab-btn" data-tab="contact">Join Us</button>
                     <button class="tab-btn" data-tab="donate">Donate</button>
                     <button class="tab-btn" data-tab="issues">Issues</button>
                 </div>
@@ -260,11 +260,11 @@
                                 <div class="terminal-content">
                                     ## 第一步：了解我们<br>
                                     阅读我们的实验文档和社区指南<br><br>
-                                    ## 第二步：进入结点<br>
+                                    ## 第二步：进入结点(点击Join Us)<br>
                                     选择你喜欢的方式连接 404 网络<br><br>
                                     - 加入微信群  
-                                    - 加入 Discord  
-                                    - 关注线下活动发布
+                                    - 关注公众号
+                                    - 关注推特（X.com）
                                     ## 第三步：找到连接<br>
                                     通过根据兴趣与背景选择你的方向：
                                     - AI / Web3 / OSS / 硬科技  
@@ -282,12 +282,14 @@
                     </div>
                     <div id="contactContent" class="tab-pane">
                         <div class="access-card">
-                            <h3>CONTACT</h3>
-                            <div id="contactGrid"></div>
-                            <div class="contact-bar">
-                                <div class="contact-item"><i class="fa-brands fa-twitter"></i> @node404</div>
-                                <div class="contact-item"><i class="fa-brands fa-weixin"></i> 微信公众号：NODE404</div>
-                                <div class="contact-item"><i class="fa-brands fa-weixin"></i> 微信社区：添加微信 Node404-Community</div>
+                            <div class="hosts-section">
+                                <h3 id="hostsTitle">入群与交流</h3>
+                                <p id="hostsIntro" class="hosts-intro">关注并添加两位主理人微信，私信“node404”，我们会把你拉入群；也可关注公众号与 Twitter 获取更新。</p>
+                                <div id="hostGrid"></div>
+                            </div>
+                            <div class="social-section">
+                                <h3 id="socialTitle">关注与订阅</h3>
+                                <div id="socialGrid"></div>
                             </div>
                         </div>
                     </div>
@@ -304,6 +306,8 @@
             </div>
         </div>
     </section>
+
+
 
     <!-- Footer -->
     <footer class="footer">

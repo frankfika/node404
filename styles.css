@@ -1319,6 +1319,32 @@ a:hover {
   font-size: 0.875rem;
   text-transform: uppercase;
 }
+.qr-crypto .desc {
+  font-size: 0.8125rem;
+  color: var(--gray-700);
+  margin-top: 0.25rem;
+}
+.hosts-section { margin-top: 1.5rem; }
+.hosts-intro { color: var(--gray-700); margin: 0.5rem 0 1rem; line-height: 1.6; }
+.qr-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; }
+.qr-grid.hosts { grid-template-columns: repeat(2, minmax(280px, 1fr)); }
+.qr-grid .qr-crypto { width: 100%; }
+.qr-grid .qr-crypto img { width: 100%; height: auto; }
+.link-card { display: flex; align-items: center; justify-content: center; border: var(--border-width) solid var(--black); background: var(--white); color: var(--black); padding: 0.75rem 1rem; text-decoration: none; font-family: var(--mono); }
+.link-card:hover { background: var(--black); color: var(--white); }
+.social-section { margin-top: 2rem; }
+.subscribe-band { border: var(--border-width) solid var(--black); background: var(--white); padding: 1.5rem; margin: 2rem 0; }
+.subscribe-band h3 { margin-top: 0; margin-bottom: 1rem; }
+/* Hosts and social layout enhancements */
+#hostGrid { display: grid; grid-template-columns: repeat(2, minmax(320px, 1fr)); gap: 1.25rem; align-items: stretch; justify-items: center; }
+#socialGrid, #subscribeGrid { display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; }
+.qr-crypto.host { display: flex; align-items: center; width: 100%; max-width: none; text-align: left; padding: 0.75rem 1rem; }
+.qr-crypto.host img { width: 140px; height: auto; flex-shrink: 0; }
+.qr-crypto.host .qr-content { padding-left: 1rem; }
+.qr-crypto.host .label { font-weight: 600; margin-bottom: 0.25rem; }
+.qr-crypto.host .desc { line-height: 1.6; }
+.link-card.big { min-width: 240px; padding: 1rem 1.25rem; font-weight: 600; }
+.link-card.big { min-width: 240px; padding: 1rem 1.25rem; font-weight: 600; }
 @media (max-width: 768px) {
   .nav-links { display: none; }
   .hero { padding-top: 7rem; }
@@ -1328,8 +1354,13 @@ a:hover {
   .floating-issue-btn { right: 1rem; bottom: calc(1rem + env(safe-area-inset-bottom)); }
   .tab-switch { flex-wrap: wrap; }
   .tab-switch .tab-btn { flex: 1 1 45%; }
+  .qr-grid.hosts { grid-template-columns: 1fr; }
+  .qr-crypto.host { flex-direction: column; align-items: flex-start; }
+  .qr-crypto.host img { width: 140px; }
 }
 @media (max-width: 768px) {
   .issue-modal { width: 95%; margin: 8vh auto 0; max-height: 80vh; overflow: auto; }
   .issue-modal .issue-form { grid-template-columns: 1fr; }
 }
+.subscribe.section { margin-top: 3rem; }
+.subscribe #subscribeGrid { margin-top: 1rem; }
