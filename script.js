@@ -58,8 +58,18 @@
       'AI + Web3 + 现实'
     ];
 
+    // 捐赠相关弹幕（可点击）
+    const donateSlogans = [
+      '❤ Support Node404',
+      '☕ Buy us a coffee',
+      '🚀 Fund the experiment',
+      '💡 Support open innovation',
+      '🔥 Keep 404 alive'
+    ];
+
     const hardcodeSlogans = [
       ...coreSlogans,
+      ...donateSlogans,
       '极客精神：动手解决问题',
       'Build > Talk',
       'Open Source Collective',
@@ -92,12 +102,18 @@
     }
 
     // 自动弹幕
+    let donateCounter = 0;
     function autoDanmaku() {
       if (!state.danmakuEnabled) return;
       if (container.childElementCount >= MAX_CONCURRENT) return;
       const pool = Array.from(new Set([...hardcodeSlogans, ...state.latestDanmaku]));
       let text;
-      if (queuePtr < scrollQueue.length) {
+
+      // 每4条弹幕插入一条捐赠弹幕
+      donateCounter++;
+      if (donateCounter % 4 === 0) {
+        text = donateSlogans[random(0, donateSlogans.length - 1)];
+      } else if (queuePtr < scrollQueue.length) {
         text = scrollQueue[queuePtr++];
       } else if (coreIndex % 3 === 0) {
         text = coreSlogans[coreIndex % coreSlogans.length];
@@ -129,6 +145,16 @@
       item.className = 'danmaku-item';
       item.textContent = text;
       item.style.visibility = force ? 'visible' : 'hidden';
+
+      // 捐赠弹幕可点击
+      if (donateSlogans.includes(text)) {
+        item.classList.add('danmaku-donate');
+        item.style.cursor = 'pointer';
+        item.addEventListener('click', () => {
+          openDonateModal();
+        });
+      }
+
       container.appendChild(item);
 
       const w = item.offsetWidth || 120;
@@ -807,3 +833,66 @@
   }
 
 })();
+
+// 全局函数：打开捐赠弹窗
+window.openDonateModal = function() {
+  const modal = document.getElementById('donateModal');
+  const walletsContainer = document.getElementById('donateWallets');
+
+  if (!modal) {
+    console.error('Donate modal not found');
+    return;
+  }
+
+  // 加载钱包二维码
+  if (walletsContainer && !walletsContainer.hasChildNodes()) {
+    const wallets = [
+      { label: 'BTC', src: 'donationwallet/Btc.JPEG' },
+      { label: 'ETH', src: 'donationwallet/eth.JPEG' },
+      { label: 'BNB', src: 'donationwallet/bnb.JPEG' },
+      { label: 'TRX', src: 'donationwallet/Trx.JPEG' },
+      { label: 'SOL', src: 'donationwallet/Sol.JPEG' }
+    ];
+    wallets.forEach(({ label, src }) => {
+      const card = document.createElement('div');
+      card.className = 'donate-wallet-card';
+      card.innerHTML = '<img src="' + src + '" alt="' + label + '"><span>' + label + '</span>';
+      walletsContainer.appendChild(card);
+    });
+  }
+
+  modal.classList.add('active');
+};
+
+window.closeDonateModal = function() {
+  const modal = document.getElementById('donateModal');
+  if (modal) modal.classList.remove('active');
+};
+
+// 初始化捐赠弹窗事件
+document.addEventListener('DOMContentLoaded', function() {
+  var modal = document.getElementById('donateModal');
+  var closeBtn = document.getElementById('closeDonate');
+  var navSupportBtn = document.getElementById('navSupportBtn');
+  var heroSupportBtn = document.getElementById('heroSupportBtn');
+
+  // 打开弹窗
+  if (navSupportBtn) {
+    navSupportBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      window.openDonateModal();
+    });
+  }
+  if (heroSupportBtn) {
+    heroSupportBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      window.openDonateModal();
+    });
+  }
+
+  // 关闭弹窗
+  if (closeBtn) closeBtn.addEventListener('click', window.closeDonateModal);
+  if (modal) modal.addEventListener('click', function(e) {
+    if (e.target === modal) window.closeDonateModal();
+  });
+});
